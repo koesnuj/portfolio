@@ -45,15 +45,15 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini, Cursor �
 
 ## :video_camera: Video
 
-### Case Import
+### [Case Import](https://youtu.be/rDzQjU-qTaE)
 
 https://github.com/user-attachments/assets/3d72a796-43e8-42e8-9007-70e120569c2a
 
-### Case Create
+### [Case Create](https://youtu.be/XBUVQqT7EIE)
 
 https://github.com/user-attachments/assets/cd6401dd-0b04-4259-a4fe-8a3e1e7a6553
 
-### Test Plan(https://youtu.be/YX40_pGSYNc) 
+### [Test Plan](https://youtu.be/YX40_pGSYNc)
 
 
 https://github.com/user-attachments/assets/746cb2c9-6f30-4cae-954f-9de9d68bfa79
