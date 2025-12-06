@@ -1,6 +1,8 @@
 ## 📌 Project — TMS_v2 (Task Management System)
 **기간:** 약 1주일
+
 **역할:** 기획 · 프롬프트 기반 개발 · 테스트 및 개선 전 과정  
+
 **GitHub:** https://github.com/koesnuj/TMS_v2
 
 ### 🔍 Overview
