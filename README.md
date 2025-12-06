@@ -5,7 +5,7 @@
 
 비전공자에서 출발했지만, 요구사항 분석·기능 설계·디버깅·테스트 설계 등  
 QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등)**를 활용해  
-실제 테스트 관리리 시스템(TMS_v2)을 단독으로 개발하며 품질 중심의 사고를 확장했습니다.
+실제 테스트 관리 시스템을 단독으로 개발하며 품질 중심의 사고를 확장했습니다.
 
 ---
 
@@ -33,11 +33,23 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등
 
 ## 📁 Projects
 
-### 🔹 [TMS_v2 – AI 기반 업무 관리 시스템](./projects/TMS_v2/README.md)
-> 비전공자 QA가 AI를 활용하여 **기획 → 정의 → 구현 → 테스팅 → 개선** 전 과정을 수행한 프로젝트  
-> QA 역량을 가장 잘 보여주는 실질적 사례
+### 🔹 [TMS_v2 – Test Management System](./projects/TMS_v2/README.md)
+### 🔹 [TMS Retrospect](https://github.com/koesnuj/portfolio/blob/a461762ecc2726e7177f72991d092a8783c7cb81/projects/TMS_v2/retrospect.md)
+### 🔹 [사용한 주요 프롬프트](https://github.com/koesnuj/portfolio/blob/d0b9470ce3b17c97128ad622697b8078b8dd59ec/projects/TMS_v2/prompt.md)
+
 
 ---
+
+## :video_camera: Video
+
+https://github.com/user-attachments/assets/be8e960d-c040-4724-91c6-895ee9c955b3
+
+https://github.com/user-attachments/assets/890da5a8-16ea-44dd-868c-54718c2a2956
+
+https://github.com/user-attachments/assets/60507605-4978-4964-a84d-db3873396e16
+
+
+
 
 ## 📬 Contact  
 - **Email:** whizkid00@gmail.com  

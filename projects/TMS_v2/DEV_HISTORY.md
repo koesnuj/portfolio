@@ -1188,27 +1188,6 @@ model PlanItem {
 
 ---
 
-## 📝 주요 문서
-
-### 설치 및 실행
-- `README.md` - 프로젝트 개요 및 빠른 시작
-- `MD/SETUP_GUIDE.md` - 상세 설치 가이드
-- `backend/README.md` - 백엔드 API 문서
-
-### 기능 가이드
-- `MD/PROJECT_SUMMARY.md` - 프로젝트 전체 요약
-- `MD/AUTH_IMPLEMENTATION_GUIDE.md` - 인증 구현 상세
-- `MD/THREE_COLUMN_LAYOUT_GUIDE.md` - 3-컬럼 레이아웃
-- `MD/BULK_SELECT_EDIT_GUIDE.md` - 일괄 편집 기능
-- `MD/ADMIN_ROLE_STATUS_MANAGEMENT_GUIDE.md` - 권한 관리
-
-### 개발 가이드
-- `MD/DEV_HISTORY.md` (이 문서) - 개발 히스토리
-- `project_progress.log` - 진행 상황 로그
-- `backend/API_TEST.http` - API 테스트 예제
-
----
-
 ## 🐛 알려진 이슈 및 해결 내역
 
 ### 해결된 이슈
