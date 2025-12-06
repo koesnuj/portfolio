@@ -5,16 +5,10 @@
 
 **GitHub:** [https://github.com/koesnuj/portfolio/tree/main/projects/TMS_v2](https://github.com/koesnuj/portfolio/tree/main/projects/TMS_v2)
 
-### 🔍 Overview
-비전공자 상태에서 AI 개발 도구만을 사용하여  
-테스트 케이스와 테스트 플랜 관리가 가능한 **웹 기반 TMS 시스템**을 처음부터 끝까지 완성한 프로젝트입니다.
-
 ### 🔧 Key Features
 - 회원가입, 로그인(JWT 기반)
-- 프로젝트 CRUD 기능
-- 업무(Task) 생성, 상태 변경, 상세 조회
-- 사용자 권한(Role) 기반 접근 제어
-- 사용자 흐름에 맞춘 화면 설계 및 데이터 시나리오 제작
+- 테스트 케이스 CRUD 기능
+- 테스트 플랜 생성, 상태 변경, 상세 조회
 
 ### 🚀 Development Approach
 - 단순 기능은 프롬프트 기반 자동 구현  
