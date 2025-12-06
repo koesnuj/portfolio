@@ -3,7 +3,7 @@
 
 **역할:** 기획 · 프롬프트 기반 개발 · 테스트 및 개선 전 과정  
 
-**GitHub:** https://github.com/koesnuj/portfolio/project/TMS_v2
+**GitHub:** https://github.com/koesnuj/portfolio/projects/TMS_v2
 
 ### 🔍 Overview
 비전공자 상태에서 AI 개발 도구만을 사용하여  
