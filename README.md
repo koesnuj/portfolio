@@ -40,6 +40,9 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등
 
 ---
 
+## 📸 Screenshot
+
+
 ## 📬 Contact  
 - **Email:** whizkid00@gmail.com  
 - **GitHub:** https://github.com/koesnuj/
