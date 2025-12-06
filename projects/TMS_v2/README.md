@@ -1,4 +1,4 @@
-## 📌 Project — TMS_v2 (Task Management System)
+## 📌 Project — TMS_v2 (Test Management System)
 **기간:** 약 1주일
 
 **역할:** 기획 · 프롬프트 기반 개발 · 테스트 및 개선 전 과정  
@@ -7,7 +7,7 @@
 
 ### 🔍 Overview
 비전공자 상태에서 AI 개발 도구만을 사용하여  
-회원 관리, 프로젝트 관리, 업무(Task) 관리가 가능한 **웹 기반 TMS 시스템**을 처음부터 끝까지 완성한 프로젝트입니다.
+테스트 케이스와 테스트 플랜 관리가 가능한 **웹 기반 TMS 시스템**을 처음부터 끝까지 완성한 프로젝트입니다.
 
 ### 🔧 Key Features
 - 회원가입, 로그인(JWT 기반)
