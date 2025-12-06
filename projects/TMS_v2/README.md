@@ -31,7 +31,7 @@
 
 ---
 
-## 📚 Additional Experience
+### 📚 Additional Experience
 - 기능 요구사항 문서 작성 및 화면 정의서 작성 경험
 - 다양한 기능 흐름을 테스트하고 개선한 품질 관리 경험
 - 개인 프로젝트에서 AI 기반 반복 개발 프로세스 구축
