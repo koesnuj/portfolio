@@ -47,15 +47,21 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini, Cursor �
 
 ### Case Import
 
-https://github.com/user-attachments/assets/29c12b4a-4271-4a27-bb74-c6116e47bf15
+<video src="https://raw.githubusercontent.com/koesnuj/portfolio/main/projects/TMS_v2/assets/case_import.mp4" 
+       controls width="600"></video>
+
 
 ### Case Create
 
-https://github.com/user-attachments/assets/dd940311-89e9-4319-8f55-f3f2d017fe4e
+<video src="https://raw.githubusercontent.com/koesnuj/portfolio/main/projects/TMS_v2/assets/case_create.mp4" 
+       controls width="600"></video>
+
 
 ### Test Plan 
 
-[https://github.com/user-attachments/assets/8937cfd1-c8b8-448e-81fd-4952ce2444bc](https://youtu.be/YX40_pGSYNc)
+<video src="https://raw.githubusercontent.com/koesnuj/portfolio/main/projects/TMS_v2/assets/testplan.mp4" 
+       controls width="600"></video>
+
 
 
 
