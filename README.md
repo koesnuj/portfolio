@@ -35,7 +35,7 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등
 
 ### 🔹 [TMS_v2 – AI 기반 업무 관리 시스템](./projects/TMS_v2/README.md)
 ### 🔹 [TMS Retrospect](https://github.com/koesnuj/portfolio/blob/a461762ecc2726e7177f72991d092a8783c7cb81/projects/TMS_v2/retrospect.md)
-### 🔹 [[사용한 주요 프롬프트](https://github.com/koesnuj/portfolio/blob/a461762ecc2726e7177f72991d092a8783c7cb81/projects/TMS_v2/retrospect.md)](https://github.com/koesnuj/portfolio/blob/d0b9470ce3b17c97128ad622697b8078b8dd59ec/projects/TMS_v2/prompt.md)
+### 🔹 [[사용한 주요 프롬프트](https://github.com/koesnuj/portfolio/blob/d0b9470ce3b17c97128ad622697b8078b8dd59ec/projects/TMS_v2/prompt.md)]
 > 비전공자 QA가 AI를 활용하여 **기획 → 정의 → 구현 → 테스팅 → 개선** 전 과정을 수행한 프로젝트  
 > QA 역량을 가장 잘 보여주는 실질적 사례
 
