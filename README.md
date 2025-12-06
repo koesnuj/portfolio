@@ -40,13 +40,13 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등
 
 ---
 
-## 📸 Screenshot
+## :video_camera: Video
 
-https://github.com/user-attachments/assets/fa68b179-6640-41b5-a1e2-4cd92231c7ec
+https://github.com/user-attachments/assets/be8e960d-c040-4724-91c6-895ee9c955b3
 
-https://github.com/user-attachments/assets/8875fc5d-1789-4026-b4cc-d7838ad36cb9
+https://github.com/user-attachments/assets/890da5a8-16ea-44dd-868c-54718c2a2956
 
-https://github.com/user-attachments/assets/1b3ec93b-6677-4ec1-ad9d-bd5b90acf0ea
+https://github.com/user-attachments/assets/60507605-4978-4964-a84d-db3873396e16
 
 
 
