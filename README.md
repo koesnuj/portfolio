@@ -4,7 +4,7 @@
 서비스의 품질을 높이는 데 집중하는 **QA 임준석**입니다.
 
 비전공자에서 출발했지만, 요구사항 분석·기능 설계·디버깅·테스트 설계 등  
-QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등)**를 활용해  
+QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등)** 를 활용해  
 실제 테스트 관리 시스템을 단독으로 개발하며 품질 중심의 사고를 확장했습니다.
 
 ### 📄 [Resume](https://jseok.notion.site/3b4920ba214141b7ae3bc2bbaffff37e?source=copy_link)
