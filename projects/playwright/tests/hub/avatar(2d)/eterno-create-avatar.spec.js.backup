@@ -1,0 +1,481 @@
+const { test, expect } = require('@playwright/test');
+const config = require('../../../config/test-config');
+const { loginAndHandleCookies } = require('../../../utils/auth-helper');
+
+// 무작위 아바타 이름 생성 함수
+function generateRandomAvatarName() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `TestAvatar_${result}`;
+}
+
+// 경고 팝업 처리 함수
+async function handleWarningPopup(page) {
+  try {
+    // "Oops! An unknown error has occurred" 팝업 확인
+    const reloadButton = page.locator('button:has-text("Reload")');
+    if (await reloadButton.count() > 0) {
+      console.log('⚠️ 경고 팝업 발견! Reload 버튼 클릭...');
+      await reloadButton.click();
+      await page.waitForTimeout(3000); // 페이지 리로드 대기
+      console.log('✅ 페이지 리로드 완료!');
+      
+      // Skintight Mask 재선택
+      console.log('🔄 Skintight Mask 재선택...');
+      const skintightMaskElement = page.locator('div.TemplateItem_imageBox__xt_7I:has(img[alt="Skintight Mask"])');
+      await expect(skintightMaskElement).toBeVisible({ timeout: 10000 });
+      await skintightMaskElement.click();
+      console.log('✅ Skintight Mask 재선택 완료!');
+      
+      // PNG 파일 다시 업로드
+      console.log('🔄 PNG 파일 다시 업로드...');
+      const uploadButton = page.locator('button[data-testid="file-input-btn"]');
+      await expect(uploadButton).toBeVisible({ timeout: 10000 });
+      console.log('업로드 버튼 발견!');
+      
+      // 파일 선택 대화상자 이벤트 대기
+      const fileChooserPromise = page.waitForEvent('filechooser');
+      
+      // 업로드 버튼 클릭
+      await uploadButton.click();
+      console.log('업로드 버튼 클릭 완료!');
+      
+      // 파일 선택 대화상자 처리
+      const fileChooser = await fileChooserPromise;
+      await fileChooser.setFiles('C:\\Users\\cmiron\\Desktop\\imagemaker\\512x512.png');
+      console.log('PNG 파일 선택 완료!');
+      
+      // 업로드 완료 대기
+      await page.waitForTimeout(3000);
+      console.log('PNG 파일 재업로드 프로세스 완료!');
+      
+      return true; // 팝업 처리됨
+    }
+  } catch (error) {
+    console.log('경고 팝업이 없거나 이미 처리됨');
+  }
+  return false; // 팝업 없음
+}
+
+test.describe('Eterno Studio Create Avatar Item 자동화', () => {
+  test('1단계: 로그인 및 쿠키 동의', async ({ page }) => {
+    test.setTimeout(60000); // 1분 타임아웃
+    
+    console.log('🔐 1단계: 로그인 및 쿠키 동의 시작...');
+    await loginAndHandleCookies(page);
+    console.log('✅ 1단계 완료: 로그인 및 쿠키 동의');
+    
+    // 브라우저 유지 (안전한 방법으로 변경)
+    console.log('1단계 완료! 브라우저를 3초간 유지합니다...');
+    try {
+      await page.waitForTimeout(3000);
+    } catch (error) {
+      if (error.message.includes('Target page, context or browser has been closed')) {
+        console.log('브라우저가 이미 닫혔습니다. 테스트 완료.');
+      } else {
+        throw error;
+      }
+    }
+  });
+  
+  test('2단계: Create 페이지 이동 및 Avatar Item 선택', async ({ page }) => {
+    test.setTimeout(60000); // 1분 타임아웃
+    
+    console.log('📁 2단계: Create 페이지 이동 및 Avatar Item 선택 시작...');
+    
+    // 1단계: 로그인 및 쿠키 동의
+    await loginAndHandleCookies(page);
+    
+    // 2단계: Create 페이지로 이동
+    console.log('Create 페이지로 이동...');
+    await page.goto('https://eterno-qa.ovdr.io/creator/create');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+    
+    // 3단계: Avatar Item 버튼 클릭
+    console.log('Avatar Item 버튼 찾기 및 클릭...');
+    const avatarItemButton = page.locator('div:has-text("Avatar item"):not(:has-text("Super easy"))');
+    await expect(avatarItemButton).toBeVisible();
+    await avatarItemButton.click();
+    
+    // Avatar Item 클릭 후 안정적인 대기
+    await page.waitForLoadState('networkidle');
+    
+    // URL 변경 확인
+    const avatarItemUrl = page.url();
+    console.log('Avatar Item 클릭 후 URL:', avatarItemUrl);
+    
+    // 템플릿 아이템들이 로드될 때까지 대기
+    try {
+      await page.waitForSelector('div.TemplateItem_imageBox__xt_7I', { 
+        timeout: 15000,
+        state: 'visible'
+      });
+      console.log('템플릿 아이템들이 로드됨!');
+    } catch (error) {
+      console.log('템플릿 아이템 로딩 실패. 계속 진행...');
+    }
+    
+    console.log('✅ 2단계 완료: Create 페이지 이동 및 Avatar Item 선택');
+    
+    // 브라우저 유지 (안전한 방법으로 변경)
+    console.log('2단계 완료! 브라우저를 3초간 유지합니다...');
+    try {
+      await page.waitForTimeout(3000);
+    } catch (error) {
+      if (error.message.includes('Target page, context or browser has been closed')) {
+        console.log('브라우저가 이미 닫혔습니다. 테스트 완료.');
+      } else {
+        throw error;
+      }
+    }
+  });
+  
+  test('3단계: Skintight Mask 템플릿 선택', async ({ page }) => {
+    test.setTimeout(60000); // 1분 타임아웃
+    
+    console.log('🎭 3단계: Skintight Mask 템플릿 선택 시작...');
+    
+    // 1단계: 로그인 및 쿠키 동의
+    await loginAndHandleCookies(page);
+    
+    // 2단계: Create 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io/creator/create');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+    
+    // 3단계: Avatar Item 버튼 클릭
+    const avatarItemButton = page.locator('div:has-text("Avatar item"):not(:has-text("Super easy"))');
+    await expect(avatarItemButton).toBeVisible();
+    await avatarItemButton.click();
+    await page.waitForLoadState('networkidle');
+    
+    // 4단계: Skintight Mask 카테고리 찾기 및 선택
+    console.log('Skintight Mask 카테고리 찾기...');
+    
+    // 현재 URL 확인
+    const currentUrl = page.url();
+    console.log('현재 URL:', currentUrl);
+    
+    // 쿠키 동의 팝업 처리
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All"), button.primary_QRLmx:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        console.log('쿠키 동의 팝업 발견! Accept All 버튼 클릭...');
+        await cookieAcceptButton.first().click();
+        await page.waitForTimeout(1000);
+      }
+    } catch (error) {
+      console.log('쿠키 동의 팝업이 없거나 이미 처리됨');
+    }
+    
+    // Skintight Mask 요소 찾기
+    const skintightMaskElement = page.locator('div.TemplateItem_imageBox__xt_7I:has(img[alt="Skintight Mask"])');
+    
+    try {
+      await expect(skintightMaskElement).toBeVisible({ timeout: 5000 });
+      console.log('Skintight Mask 요소 발견!');
+      
+      // Skintight Mask 클릭
+      await skintightMaskElement.click();
+      console.log('Skintight Mask 선택 완료!');
+      
+    } catch (error) {
+      console.log('Skintight Mask 요소를 찾을 수 없습니다. 대체 방법 시도...');
+      
+      // 대체 방법: alt 속성으로 찾기
+      const skintightMaskImg = page.locator('img[alt="Skintight Mask"]');
+      if (await skintightMaskImg.count() > 0) {
+        await skintightMaskImg.first().click();
+        console.log('Skintight Mask 이미지 클릭 완료!');
+      } else {
+        throw new Error('Skintight Mask 요소를 찾을 수 없습니다');
+      }
+    }
+    
+    console.log('✅ 3단계 완료: Skintight Mask 템플릿 선택');
+    
+    // 브라우저 유지 (안전한 방법으로 변경)
+    console.log('3단계 완료! 브라우저를 3초간 유지합니다...');
+    try {
+      await page.waitForTimeout(3000);
+    } catch (error) {
+      if (error.message.includes('Target page, context or browser has been closed')) {
+        console.log('브라우저가 이미 닫혔습니다. 테스트 완료.');
+      } else {
+        throw error;
+      }
+    }
+  });
+  
+  test('4단계: PNG 파일 업로드', async ({ page }) => {
+    test.setTimeout(120000); // 2분 타임아웃
+    
+    console.log('📁 4단계: PNG 파일 업로드 시작...');
+    
+    // 1단계: 로그인 및 쿠키 동의
+    await loginAndHandleCookies(page);
+    
+    // 2단계: Create 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io/creator/create');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+    
+    // 3단계: Avatar Item 버튼 클릭
+    const avatarItemButton = page.locator('div:has-text("Avatar item"):not(:has-text("Super easy"))');
+    await expect(avatarItemButton).toBeVisible();
+    await avatarItemButton.click();
+    await page.waitForLoadState('networkidle');
+    
+    // 4단계: Skintight Mask 선택
+    const skintightMaskElement = page.locator('div.TemplateItem_imageBox__xt_7I:has(img[alt="Skintight Mask"])');
+    await expect(skintightMaskElement).toBeVisible({ timeout: 5000 });
+    await skintightMaskElement.click();
+    
+    // 5단계: PNG 파일 업로드
+    console.log('PNG 파일 업로드 시작...');
+    
+    // 업로드 버튼 찾기 (data-testid 사용)
+    const uploadButton = page.locator('button[data-testid="file-input-btn"]');
+    await expect(uploadButton).toBeVisible({ timeout: 10000 });
+    console.log('업로드 버튼 발견!');
+    
+    // 파일 선택 대화상자 이벤트 대기
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    
+    // 업로드 버튼 클릭
+    await uploadButton.click();
+    console.log('업로드 버튼 클릭 완료!');
+    
+    // 파일 선택 대화상자 처리
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles('C:\\Users\\cmiron\\Desktop\\imagemaker\\512x512.png');
+    console.log('PNG 파일 선택 완료!');
+    
+    // 업로드 완료 대기
+    await page.waitForTimeout(3000);
+    console.log('PNG 파일 업로드 프로세스 완료!');
+    
+    // 경고 팝업 처리
+    await handleWarningPopup(page);
+    
+    console.log('✅ 4단계 완료: PNG 파일 업로드');
+    
+    // 브라우저 유지 (안전한 방법으로 변경)
+    console.log('4단계 완료! 브라우저를 3초간 유지합니다...');
+    try {
+      await page.waitForTimeout(3000);
+    } catch (error) {
+      if (error.message.includes('Target page, context or browser has been closed')) {
+        console.log('브라우저가 이미 닫혔습니다. 테스트 완료.');
+      } else {
+        throw error;
+      }
+    }
+  });
+  
+  test('5단계: 아이템 정보 입력', async ({ page }) => {
+    test.setTimeout(120000); // 2분 타임아웃
+    
+    console.log('📝 5단계: 아이템 정보 입력 시작...');
+    
+    // 무작위 아바타 이름 생성
+    const randomAvatarName = generateRandomAvatarName();
+    console.log(`생성된 아바타 이름: ${randomAvatarName}`);
+    
+    // 1단계: 로그인 및 쿠키 동의
+    await loginAndHandleCookies(page);
+    
+    // 2단계: Create 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io/creator/create');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+    
+    // 3단계: Avatar Item 버튼 클릭
+    const avatarItemButton = page.locator('div:has-text("Avatar item"):not(:has-text("Super easy"))');
+    await expect(avatarItemButton).toBeVisible();
+    await avatarItemButton.click();
+    await page.waitForLoadState('networkidle');
+    
+    // 4단계: Skintight Mask 선택
+    const skintightMaskElement = page.locator('div.TemplateItem_imageBox__xt_7I:has(img[alt="Skintight Mask"])');
+    await expect(skintightMaskElement).toBeVisible({ timeout: 5000 });
+    await skintightMaskElement.click();
+    
+    // 5단계: PNG 파일 업로드
+    const uploadButton = page.locator('button[data-testid="file-input-btn"]');
+    await expect(uploadButton).toBeVisible({ timeout: 10000 });
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await uploadButton.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles('C:\\Users\\cmiron\\Desktop\\imagemaker\\512x512.png');
+    await page.waitForTimeout(3000);
+    
+    // 경고 팝업 처리
+    await handleWarningPopup(page);
+    
+    // 6단계: Next 버튼 클릭
+    console.log('Next 버튼 클릭...');
+    const nextButton = page.locator('button:has-text("Next"), button[data-testid*="next"], button.primary_QRLmx:has-text("Next")');
+    await expect(nextButton).toBeVisible({ timeout: 10000 });
+    await nextButton.click();
+    console.log('Next 버튼 클릭 완료!');
+    
+    // 페이지 이동 대기 (더 안정적인 방법)
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(3000);
+    
+    // URL 변경 확인
+    const nextPageUrl = page.url();
+    console.log('Next 버튼 클릭 후 URL:', nextPageUrl);
+    
+    // 7단계: 아이템 정보 입력
+    console.log('아이템 정보 입력...');
+    
+    // 페이지 로딩 대기 (더 빠른 방법)
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(2000);
+    
+    // 현재 URL 확인
+    const infoPageUrl = page.url();
+    console.log('현재 URL:', infoPageUrl);
+    
+    // 페이지 내용 확인 (디버깅용)
+    const pageContent = await page.textContent('body');
+    console.log('페이지 내용 확인:', pageContent.substring(0, 500) + '...');
+    
+    // Name 필드 찾기 및 입력 (정확한 locator 사용)
+    const nameField = page.locator('input[placeholder="Enter name"]');
+    await expect(nameField).toBeVisible({ timeout: 15000 });
+    await nameField.fill(randomAvatarName);
+    console.log(`Name 필드 입력 완료: ${randomAvatarName}`);
+    
+    // Price 필드 찾기 및 입력 (정확한 locator 사용)
+    const priceField = page.locator('input[placeholder="Enter price"]');
+    await expect(priceField).toBeVisible({ timeout: 15000 });
+    await priceField.fill('500');
+    console.log('Price 필드 입력 완료: 500');
+    
+    // 입력 완료 대기
+    await page.waitForTimeout(1000);
+    console.log('아이템 정보 입력 완료!');
+    
+    console.log('✅ 5단계 완료: 아이템 정보 입력');
+    
+    // 브라우저 유지 (안전한 방법으로 변경)
+    console.log('5단계 완료! 브라우저를 3초간 유지합니다...');
+    try {
+      await page.waitForTimeout(3000);
+    } catch (error) {
+      if (error.message.includes('Target page, context or browser has been closed')) {
+        console.log('브라우저가 이미 닫혔습니다. 테스트 완료.');
+      } else {
+        throw error;
+      }
+    }
+  });
+  
+  test('6단계: 동의 체크박스 및 Complete', async ({ page }) => {
+    test.setTimeout(120000); // 2분 타임아웃
+    
+    console.log('✅ 6단계: 동의 체크박스 및 Complete 시작...');
+    
+    // 무작위 아바타 이름 생성
+    const randomAvatarName = generateRandomAvatarName();
+    console.log(`생성된 아바타 이름: ${randomAvatarName}`);
+    
+    // 1단계: 로그인 및 쿠키 동의
+    await loginAndHandleCookies(page);
+    
+    // 2단계: Create 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io/creator/create');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+    
+    // 3단계: Avatar Item 버튼 클릭
+    const avatarItemButton = page.locator('div:has-text("Avatar item"):not(:has-text("Super easy"))');
+    await expect(avatarItemButton).toBeVisible();
+    await avatarItemButton.click();
+    await page.waitForLoadState('networkidle');
+    
+    // 4단계: Skintight Mask 선택
+    const skintightMaskElement = page.locator('div.TemplateItem_imageBox__xt_7I:has(img[alt="Skintight Mask"])');
+    await expect(skintightMaskElement).toBeVisible({ timeout: 5000 });
+    await skintightMaskElement.click();
+    
+    // 5단계: PNG 파일 업로드
+    const uploadButton = page.locator('button[data-testid="file-input-btn"]');
+    await expect(uploadButton).toBeVisible({ timeout: 10000 });
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await uploadButton.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles('C:\\Users\\cmiron\\Desktop\\imagemaker\\512x512.png');
+    await page.waitForTimeout(3000);
+    
+    // 경고 팝업 처리
+    await handleWarningPopup(page);
+    
+    // 6단계: Next 버튼 클릭
+    const nextButton = page.locator('button:has-text("Next"), button[data-testid*="next"], button.primary_QRLmx:has-text("Next")');
+    await expect(nextButton).toBeVisible({ timeout: 10000 });
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(3000);
+    
+    // 7단계: 아이템 정보 입력
+    const nameField = page.locator('input[placeholder="Enter name"]');
+    await expect(nameField).toBeVisible({ timeout: 15000 });
+    await nameField.fill(randomAvatarName);
+    
+    const priceField = page.locator('input[placeholder="Enter price"]');
+    await expect(priceField).toBeVisible({ timeout: 15000 });
+    await priceField.fill('500');
+    await page.waitForTimeout(1000);
+    
+    // 8단계: Next 버튼 클릭 (동의 페이지로 이동)
+    console.log('Next 버튼 클릭 (동의 페이지로 이동)...');
+    const nextButton2 = page.locator('button:has-text("Next"), button[data-testid*="next"], button.primary_QRLmx:has-text("Next")');
+    await expect(nextButton2).toBeVisible({ timeout: 10000 });
+    await nextButton2.click();
+    console.log('Next 버튼 클릭 완료!');
+    
+    // 페이지 이동 대기
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(3000);
+    
+    // 9단계: 동의 체크박스 선택
+    console.log('동의 체크박스 선택...');
+    const agreementCheckbox = page.locator('button[role="checkbox"][data-state="unchecked"]');
+    await expect(agreementCheckbox).toBeVisible({ timeout: 10000 });
+    await agreementCheckbox.click();
+    console.log('동의 체크박스 선택 완료!');
+    
+    // 10단계: Complete 버튼 클릭
+    console.log('Complete 버튼 클릭...');
+    const completeButton = page.locator('button:has-text("Complete"), button[data-testid*="complete"], button.primary_QRLmx:has-text("Complete")');
+    await expect(completeButton).toBeVisible({ timeout: 10000 });
+    await completeButton.click();
+    console.log('Complete 버튼 클릭 완료!');
+    
+    // 완료 대기
+    await page.waitForTimeout(3000);
+    console.log('아바타 아이템 생성 완료!');
+    
+    console.log('✅ 6단계 완료: 동의 체크박스 및 Complete');
+    
+    // 브라우저 유지 (안전한 방법으로 변경)
+    console.log('6단계 완료! 브라우저를 3초간 유지합니다...');
+    try {
+      await page.waitForTimeout(3000);
+    } catch (error) {
+      if (error.message.includes('Target page, context or browser has been closed')) {
+        console.log('브라우저가 이미 닫혔습니다. 테스트 완료.');
+      } else {
+        throw error;
+      }
+    }
+  });
+});

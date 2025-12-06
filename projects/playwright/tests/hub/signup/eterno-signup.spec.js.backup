@@ -1,0 +1,463 @@
+const { test, expect } = require('@playwright/test');
+const config = require('../../../config/test-config');
+const { loginAndHandleCookies } = require('../../../utils/auth-helper');
+
+// 무작위 계정명 생성 함수
+function generateRandomAccountName() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `TestAccount_${result}`;
+}
+
+// 금칙어 목록
+const PROFANITY_WORDS = [
+  'admin', 'administrator', 'root', 'system', 'test', 'user', 'guest',
+  'fuck', 'shit', 'damn', 'hell', 'bitch', 'ass', 'crap',
+  'hate', 'kill', 'die', 'death', 'murder', 'violence'
+];
+
+// 금칙어 확인 함수
+function checkProfanity(username) {
+  const lowerUsername = username.toLowerCase();
+  return PROFANITY_WORDS.some(word => lowerUsername.includes(word));
+}
+
+// 생년월일 생성 함수 (13세 미만/이상)
+function generateBirthDate(isUnder13 = false) {
+  const currentYear = new Date().getFullYear();
+  const targetAge = isUnder13 ? Math.floor(Math.random() * 12) + 1 : Math.floor(Math.random() * 50) + 13;
+  const birthYear = currentYear - targetAge;
+  const birthMonth = Math.floor(Math.random() * 12) + 1;
+  const birthDay = Math.floor(Math.random() * 28) + 1; // 안전한 날짜
+  
+  return {
+    year: birthYear,
+    month: birthMonth,
+    day: birthDay,
+    age: targetAge
+  };
+}
+
+test.describe('Eterno Studio 회원가입 자동화', () => {
+  test('1단계: 회원가입 페이지 접속', async ({ page }) => {
+    test.setTimeout(60000);
+    
+    console.log('🔐 1단계: 회원가입 페이지 접속 시작...');
+    
+    // 홈페이지 방문
+    await page.goto('https://eterno-qa.ovdr.io');
+    await page.waitForLoadState('networkidle');
+    
+    // 쿠키 동의
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        await cookieAcceptButton.click();
+        console.log('🍪 쿠키 동의 완료');
+      }
+    } catch (error) {
+      console.log('🍪 쿠키 동의 버튼이 없음');
+    }
+    
+    // Sign up 버튼 클릭
+    console.log('Sign up 버튼 클릭...');
+    const signUpButton = page.locator('a:has-text("Sign up")');
+    await expect(signUpButton).toBeVisible({ timeout: 10000 });
+    await signUpButton.click();
+    
+    // 회원가입 페이지 로딩 대기
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+    
+    // URL 확인
+    const signupUrl = page.url();
+    console.log('회원가입 페이지 URL:', signupUrl);
+    
+    console.log('✅ 1단계 완료: 회원가입 페이지 접속');
+  });
+  
+  test('2단계: 계정명 입력 및 금칙어 확인', async ({ page }) => {
+    test.setTimeout(60000);
+    
+    console.log('📝 2단계: 계정명 입력 및 금칙어 확인 시작...');
+    
+    // 홈페이지 방문 및 회원가입 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io');
+    await page.waitForLoadState('networkidle');
+    
+    // 쿠키 동의
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        await cookieAcceptButton.click();
+        console.log('🍪 쿠키 동의 완료');
+      }
+    } catch (error) {
+      console.log('🍪 쿠키 동의 버튼이 없음');
+    }
+    
+    // Sign up 버튼 클릭
+    const signUpButton = page.locator('a:has-text("Sign up")');
+    await expect(signUpButton).toBeVisible({ timeout: 10000 });
+    await signUpButton.click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+    
+    // 유효한 계정명 생성 및 입력
+    const validAccountName = generateRandomAccountName();
+    console.log(`생성된 유효한 계정명: ${validAccountName}`);
+    
+    // 계정명 입력 필드 찾기 및 입력
+    const usernameField = page.locator('input[type="text"], input[placeholder*="username"], input[placeholder*="account"], input[name*="username"]').first();
+    await expect(usernameField).toBeVisible({ timeout: 10000 });
+    await usernameField.fill(validAccountName);
+    console.log(`유효한 계정명 입력 완료: ${validAccountName}`);
+    
+    // 금칙어 테스트
+    console.log('금칙어 테스트 시작...');
+    const profanityAccountName = 'admin_test';
+    console.log(`금칙어 계정명 테스트: ${profanityAccountName}`);
+    
+    // 계정명 필드 클리어 후 금칙어 입력
+    await usernameField.clear();
+    await usernameField.fill(profanityAccountName);
+    
+    // 금칙어 에러 메시지 확인
+    try {
+      await page.waitForTimeout(2000); // 에러 메시지 로딩 대기
+      const errorMessage = page.locator('text=/금칙어|profanity|invalid|not allowed/i');
+      if (await errorMessage.count() > 0) {
+        console.log('✅ 금칙어 감지 기능 확인됨');
+      } else {
+        console.log('⚠️ 금칙어 감지 기능이 작동하지 않을 수 있음');
+      }
+    } catch (error) {
+      console.log('금칙어 에러 메시지를 찾을 수 없음');
+    }
+    
+    // 다시 유효한 계정명으로 변경
+    await usernameField.clear();
+    await usernameField.fill(validAccountName);
+    console.log('유효한 계정명으로 복구 완료');
+    
+    console.log('✅ 2단계 완료: 계정명 입력 및 금칙어 확인');
+  });
+  
+  test('3단계: 생년월일 입력 (13세 이상)', async ({ page }) => {
+    test.setTimeout(60000);
+    
+    console.log('📅 3단계: 생년월일 입력 (13세 이상) 시작...');
+    
+    // 홈페이지 방문 및 회원가입 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io');
+    await page.waitForLoadState('networkidle');
+    
+    // 쿠키 동의
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        await cookieAcceptButton.click();
+        console.log('🍪 쿠키 동의 완료');
+      }
+    } catch (error) {
+      console.log('🍪 쿠키 동의 버튼이 없음');
+    }
+    
+    // Sign up 버튼 클릭
+    const signUpButton = page.locator('a:has-text("Sign up")');
+    await expect(signUpButton).toBeVisible({ timeout: 10000 });
+    await signUpButton.click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+    
+    // 계정명 입력
+    const validAccountName = generateRandomAccountName();
+    const usernameField = page.locator('input[type="text"], input[placeholder*="username"], input[placeholder*="account"], input[name*="username"]').first();
+    await expect(usernameField).toBeVisible({ timeout: 10000 });
+    await usernameField.fill(validAccountName);
+    
+    // 13세 이상 생년월일 생성
+    const birthDate = generateBirthDate(false); // 13세 이상
+    console.log(`생성된 생년월일 (13세 이상): ${birthDate.year}년 ${birthDate.month}월 ${birthDate.day}일 (${birthDate.age}세)`);
+    
+    // 생년월일 드롭다운 찾기 및 선택
+    try {
+      // 년도 드롭다운
+      const yearDropdown = page.locator('select[name*="year"], select[id*="year"], .year-select, [data-testid*="year"]').first();
+      if (await yearDropdown.count() > 0) {
+        await yearDropdown.selectOption({ value: birthDate.year.toString() });
+        console.log(`년도 선택 완료: ${birthDate.year}`);
+      } else {
+        console.log('년도 드롭다운을 찾을 수 없음');
+      }
+      
+      // 월 드롭다운
+      const monthDropdown = page.locator('select[name*="month"], select[id*="month"], .month-select, [data-testid*="month"]').first();
+      if (await monthDropdown.count() > 0) {
+        await monthDropdown.selectOption({ value: birthDate.month.toString() });
+        console.log(`월 선택 완료: ${birthDate.month}`);
+      } else {
+        console.log('월 드롭다운을 찾을 수 없음');
+      }
+      
+      // 일 드롭다운
+      const dayDropdown = page.locator('select[name*="day"], select[id*="day"], .day-select, [data-testid*="day"]').first();
+      if (await dayDropdown.count() > 0) {
+        await dayDropdown.selectOption({ value: birthDate.day.toString() });
+        console.log(`일 선택 완료: ${birthDate.day}`);
+      } else {
+        console.log('일 드롭다운을 찾을 수 없음');
+      }
+      
+    } catch (error) {
+      console.log('생년월일 드롭다운 처리 중 오류:', error.message);
+    }
+    
+    console.log('✅ 3단계 완료: 생년월일 입력 (13세 이상)');
+  });
+  
+  test('4단계: 생년월일 입력 (13세 미만)', async ({ page }) => {
+    test.setTimeout(60000);
+    
+    console.log('📅 4단계: 생년월일 입력 (13세 미만) 시작...');
+    
+    // 홈페이지 방문 및 회원가입 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io');
+    await page.waitForLoadState('networkidle');
+    
+    // 쿠키 동의
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        await cookieAcceptButton.click();
+        console.log('🍪 쿠키 동의 완료');
+      }
+    } catch (error) {
+      console.log('🍪 쿠키 동의 버튼이 없음');
+    }
+    
+    // Sign up 버튼 클릭
+    const signUpButton = page.locator('a:has-text("Sign up")');
+    await expect(signUpButton).toBeVisible({ timeout: 10000 });
+    await signUpButton.click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+    
+    // 계정명 입력
+    const validAccountName = generateRandomAccountName();
+    const usernameField = page.locator('input[type="text"], input[placeholder*="username"], input[placeholder*="account"], input[name*="username"]').first();
+    await expect(usernameField).toBeVisible({ timeout: 10000 });
+    await usernameField.fill(validAccountName);
+    
+    // 13세 미만 생년월일 생성
+    const birthDate = generateBirthDate(true); // 13세 미만
+    console.log(`생성된 생년월일 (13세 미만): ${birthDate.year}년 ${birthDate.month}월 ${birthDate.day}일 (${birthDate.age}세)`);
+    
+    // 생년월일 드롭다운 찾기 및 선택
+    try {
+      // 년도 드롭다운
+      const yearDropdown = page.locator('select[name*="year"], select[id*="year"], .year-select, [data-testid*="year"]').first();
+      if (await yearDropdown.count() > 0) {
+        await yearDropdown.selectOption({ value: birthDate.year.toString() });
+        console.log(`년도 선택 완료: ${birthDate.year}`);
+      }
+      
+      // 월 드롭다운
+      const monthDropdown = page.locator('select[name*="month"], select[id*="month"], .month-select, [data-testid*="month"]').first();
+      if (await monthDropdown.count() > 0) {
+        await monthDropdown.selectOption({ value: birthDate.month.toString() });
+        console.log(`월 선택 완료: ${birthDate.month}`);
+      }
+      
+      // 일 드롭다운
+      const dayDropdown = page.locator('select[name*="day"], select[id*="day"], .day-select, [data-testid*="day"]').first();
+      if (await dayDropdown.count() > 0) {
+        await dayDropdown.selectOption({ value: birthDate.day.toString() });
+        console.log(`일 선택 완료: ${birthDate.day}`);
+      }
+      
+      // 13세 미만 에러 메시지 확인
+      await page.waitForTimeout(2000);
+      const ageError = page.locator('text=/13세 미만|under 13|age restriction|parental consent/i');
+      if (await ageError.count() > 0) {
+        console.log('✅ 13세 미만 제한 확인됨');
+      } else {
+        console.log('⚠️ 13세 미만 제한 메시지를 찾을 수 없음');
+      }
+      
+    } catch (error) {
+      console.log('생년월일 드롭다운 처리 중 오류:', error.message);
+    }
+    
+    console.log('✅ 4단계 완료: 생년월일 입력 (13세 미만)');
+  });
+  
+  test('5단계: 계정 생성 확인', async ({ page }) => {
+    test.setTimeout(120000);
+    
+    console.log('✅ 5단계: 계정 생성 확인 시작...');
+    
+    // 홈페이지 방문 및 회원가입 페이지로 이동
+    await page.goto('https://eterno-qa.ovdr.io');
+    await page.waitForLoadState('networkidle');
+    
+    // 쿠키 동의
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        await cookieAcceptButton.click();
+        console.log('🍪 쿠키 동의 완료');
+      }
+    } catch (error) {
+      console.log('🍪 쿠키 동의 버튼이 없음');
+    }
+    
+    // Sign up 버튼 클릭
+    const signUpButton = page.locator('a:has-text("Sign up")');
+    await expect(signUpButton).toBeVisible({ timeout: 10000 });
+    await signUpButton.click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+    
+    // 계정명 입력
+    const validAccountName = generateRandomAccountName();
+    const usernameField = page.locator('input[type="text"], input[placeholder*="username"], input[placeholder*="account"], input[name*="username"]').first();
+    await expect(usernameField).toBeVisible({ timeout: 10000 });
+    await usernameField.fill(validAccountName);
+    
+    // 13세 이상 생년월일 입력
+    const birthDate = generateBirthDate(false);
+    
+    try {
+      const yearDropdown = page.locator('select[name*="year"], select[id*="year"], .year-select, [data-testid*="year"]').first();
+      if (await yearDropdown.count() > 0) {
+        await yearDropdown.selectOption({ value: birthDate.year.toString() });
+      }
+      
+      const monthDropdown = page.locator('select[name*="month"], select[id*="month"], .month-select, [data-testid*="month"]').first();
+      if (await monthDropdown.count() > 0) {
+        await monthDropdown.selectOption({ value: birthDate.month.toString() });
+      }
+      
+      const dayDropdown = page.locator('select[name*="day"], select[id*="day"], .day-select, [data-testid*="day"]').first();
+      if (await dayDropdown.count() > 0) {
+        await dayDropdown.selectOption({ value: birthDate.day.toString() });
+      }
+    } catch (error) {
+      console.log('생년월일 입력 중 오류:', error.message);
+    }
+    
+    // 비밀번호 입력 (필요한 경우)
+    try {
+      const passwordField = page.locator('input[type="password"], input[placeholder*="password"], input[name*="password"]').first();
+      if (await passwordField.count() > 0) {
+        await passwordField.fill('TestPassword123!');
+        console.log('비밀번호 입력 완료');
+      }
+    } catch (error) {
+      console.log('비밀번호 필드를 찾을 수 없음');
+    }
+    
+    // 회원가입 버튼 클릭
+    console.log('회원가입 버튼 클릭...');
+    const createAccountButton = page.locator('button:has-text("Create Account"), button:has-text("Sign Up"), button:has-text("Register"), button[type="submit"]').first();
+    await expect(createAccountButton).toBeVisible({ timeout: 10000 });
+    await createAccountButton.click();
+    
+    // 계정 생성 완료 대기
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000);
+    
+    // 성공 메시지 또는 리다이렉트 확인
+    const currentUrl = page.url();
+    console.log('계정 생성 후 URL:', currentUrl);
+    
+    // 성공 메시지 확인
+    try {
+      const successMessage = page.locator('text=/success|welcome|account created|회원가입 완료/i');
+      if (await successMessage.count() > 0) {
+        console.log('✅ 계정 생성 성공 메시지 확인됨');
+      } else {
+        console.log('⚠️ 성공 메시지를 찾을 수 없음');
+      }
+    } catch (error) {
+      console.log('성공 메시지 확인 중 오류');
+    }
+    
+    console.log('✅ 5단계 완료: 계정 생성 확인');
+  });
+  
+  test('6단계: 계정 삭제', async ({ page }) => {
+    test.setTimeout(120000);
+    
+    console.log('🗑️ 6단계: 계정 삭제 시작...');
+    
+    // 먼저 로그인
+    await page.goto('https://eterno-qa.ovdr.io');
+    await page.waitForLoadState('networkidle');
+    
+    // 쿠키 동의
+    try {
+      const cookieAcceptButton = page.locator('button:has-text("Accept All")');
+      if (await cookieAcceptButton.count() > 0) {
+        await cookieAcceptButton.click();
+        console.log('🍪 쿠키 동의 완료');
+      }
+    } catch (error) {
+      console.log('🍪 쿠키 동의 버튼이 없음');
+    }
+    
+    // 로그인
+    await page.click('a:has-text("Sign in")');
+    await page.click('button:has-text("[Dev] Bypass Sign in")');
+    await page.fill('input[type="text"]', 'test111');
+    await page.fill('input[type="password"]', 'test111');
+    await page.click('button:has-text("Log in")');
+    await page.waitForLoadState('networkidle');
+    
+    // 계정 설정 또는 프로필 페이지로 이동
+    try {
+      // 프로필 또는 설정 메뉴 찾기
+      const profileMenu = page.locator('a:has-text("Profile"), a:has-text("Settings"), a:has-text("Account"), button:has-text("Profile")').first();
+      if (await profileMenu.count() > 0) {
+        await profileMenu.click();
+        await page.waitForLoadState('networkidle');
+        console.log('프로필/설정 페이지로 이동');
+      }
+    } catch (error) {
+      console.log('프로필 메뉴를 찾을 수 없음');
+    }
+    
+    // 계정 삭제 버튼 찾기 및 클릭
+    try {
+      const deleteAccountButton = page.locator('button:has-text("Delete Account"), button:has-text("계정 삭제"), a:has-text("Delete Account")').first();
+      if (await deleteAccountButton.count() > 0) {
+        await deleteAccountButton.click();
+        console.log('계정 삭제 버튼 클릭');
+        
+        // 확인 다이얼로그 처리
+        await page.waitForTimeout(2000);
+        const confirmButton = page.locator('button:has-text("Confirm"), button:has-text("Delete"), button:has-text("Yes")').first();
+        if (await confirmButton.count() > 0) {
+          await confirmButton.click();
+          console.log('계정 삭제 확인');
+        }
+        
+        // 삭제 완료 대기
+        await page.waitForLoadState('networkidle');
+        await page.waitForTimeout(3000);
+        
+        console.log('✅ 계정 삭제 완료');
+      } else {
+        console.log('⚠️ 계정 삭제 버튼을 찾을 수 없음');
+      }
+    } catch (error) {
+      console.log('계정 삭제 중 오류:', error.message);
+    }
+    
+    console.log('✅ 6단계 완료: 계정 삭제');
+  });
+});

@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Test results and reports
+playwright-report/
+playwright-report-backups/
+test-results/
+screenshots/
+
+# Logs
+*.log
+scheduler.log
+
+# IDE files
+.cursor/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+
+
+
+
+
+
+
