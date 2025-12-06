@@ -7,6 +7,9 @@
 QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등)**를 활용해  
 실제 테스트 관리 시스템을 단독으로 개발하며 품질 중심의 사고를 확장했습니다.
 
+### 📄 [Resume](https://jseok.notion.site/3b4920ba214141b7ae3bc2bbaffff37e?source=copy_link)
+
+
 ---
 
 ## 🧩 My Key Strengths (QA 관점)
