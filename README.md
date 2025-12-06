@@ -37,7 +37,7 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini, Cursor �
 ## 📁 Projects
 
 ### 🔹 [TMS_v2 – Test Management System](./projects/TMS_v2/README.md)
-### 🔹 [TMS Retrospect](https://github.com/koesnuj/portfolio/blob/a461762ecc2726e7177f72991d092a8783c7cb81/projects/TMS_v2/retrospect.md)
+### 🔹 [TMS Retrospect](https://github.com/koesnuj/portfolio/blob/main/projects/TMS_v2/retrospect.md))
 ### 🔹 [사용한 주요 프롬프트](https://github.com/koesnuj/portfolio/blob/d0b9470ce3b17c97128ad622697b8078b8dd59ec/projects/TMS_v2/prompt.md)
 
 
