@@ -12,7 +12,7 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini,Cursor 등
 
 ---
 
-## 🧩 My Key Strengths (QA 관점)
+## 🧩 My Key Strengths
 
 ### ✔ 요구사항 명확화 능력  
 - 기능 흐름, 예외 케이스, 사용자 시나리오를 기준으로 한 구체적 정의 능력  
