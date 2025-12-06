@@ -1,3 +1,4 @@
+```
 Test case 페이지에 “테스트케이스 편집” 기능을 추가하고 싶다.
 
 요구사항은 다음과 같다.
@@ -63,9 +64,11 @@ Preconditions, Steps, Expected result 필드는 리치 텍스트 에디터를 �
     expectedResult: string;
     priority: "LOW" | "MEDIUM" | "HIGH";
   };
+```
 
 ---
 
+```
 Test case 폴더 구조에서 드래그&드롭을 통해
 폴더 순서를 바꾸거나 부모/자식 관계를 변경할 수 있는 기능을 추가해줘.
 
@@ -112,9 +115,11 @@ Test case 폴더 구조에서 드래그&드롭을 통해
     children?: Folder[];
     order?: number; // 같은 레벨 내 정렬 순서
   };
+```
 
 ---
 
+```
 현재 Admin 페이지와 User & Roles 페이지 구조를 다음과 같이 변경하고,
 각 역할별 권한에 맞는 기능을 추가하고 싶다.
 
@@ -191,3 +196,4 @@ Test case 폴더 구조에서 드래그&드롭을 통해
      ```
 
 위 요구사항을 만족하도록 페이지 구조, 권한 설계, UI/UX, 그리고 React + TypeScript 예제 코드를 작성해줘.
+```
