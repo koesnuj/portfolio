@@ -63,9 +63,9 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini, Cursor �
 
 ### E2E Test Automation Demo
 
-
-
 https://github.com/user-attachments/assets/playwright-e2e-test-demo.webm
+
+📊 **[상세 테스트 리포트 보기](https://koesnuj.github.io/portfolio/projects/playwright/docs/reports/)** | 📋 **[프로젝트 가이드](./projects/playwright/README.md)**
 
 
 ---
