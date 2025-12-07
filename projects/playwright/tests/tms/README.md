@@ -4,71 +4,43 @@
 
 ```
 tests/tms/
-├── auth/                    # 인증 관련 테스트
-│   └── login.spec.js       # 로그인/로그아웃 테스트
-├── testcase/               # 테스트케이스 관리
-│   └── testcase-crud.spec.js  # CRUD 테스트
-├── plan/                   # 테스트 플랜 관리
-│   └── plan-management.spec.js  # 플랜 관리 테스트
-└── dashboard/              # 대시보드
-    └── dashboard.spec.js   # 대시보드 테스트
+└── e2e/                    # E2E 전체 플로우 테스트
+    └── full-flow.spec.js   # 로그인부터 테스트케이스 생성까지 전체 플로우
 ```
 
 ## 🎯 테스트 태그
 
-- `@smoke` - 기본 동작 확인 테스트
-- `@critical` - 핵심 기능 테스트
-- `@regression` - 회귀 테스트
+- `@e2e` - End-to-End 전체 플로우 테스트
+- `@video` - 영상 녹화 필요 테스트
 
 ## 🚀 실행 방법
 
 ```bash
-# 전체 테스트 실행
-npm test
+# E2E 전체 플로우 테스트 실행
+npx playwright test tests/tms/e2e/full-flow.spec.js
 
-# 특정 폴더만 실행
-npx playwright test tests/tms/auth
-npx playwright test tests/tms/testcase
-npx playwright test tests/tms/plan
-npx playwright test tests/tms/dashboard
+# 헤드 모드로 실행 (브라우저 보면서)
+npx playwright test tests/tms/e2e/full-flow.spec.js --headed
 
-# 태그별 실행
-npx playwright test --grep @smoke
-npx playwright test --grep @critical
+# 디버그 모드
+npx playwright test tests/tms/e2e/full-flow.spec.js --debug
 
-# UI 모드로 실행
+# UI 모드로 실행 (추천)
 npx playwright test --ui
 
-# 특정 테스트 파일만 실행
-npx playwright test tests/tms/auth/login.spec.js
+# 태그별 실행
+npx playwright test --grep @e2e
+npx playwright test --grep @video
 ```
 
 ## 📝 테스트 시나리오
 
-### 인증 (auth)
-- ✅ 로그인 페이지 접속
-- ✅ 정상 로그인
-- ✅ 로그아웃
-- ✅ 잘못된 계정으로 로그인 실패
-- ✅ 빈 필드 검증
-
-### 테스트케이스 (testcase)
-- ✅ 테스트케이스 페이지 접속
-- ✅ 새 테스트케이스 생성
-- ✅ 테스트케이스 목록 조회
-- ✅ 폴더 구조 확인
-
-### 테스트 플랜 (plan)
-- ✅ 플랜 페이지 접속
-- ✅ 새 플랜 생성
-- ✅ 플랜 목록 조회
-- ✅ 플랜 상세 페이지 접근
-
-### 대시보드 (dashboard)
-- ✅ 대시보드 접속
-- ✅ 통계 위젯 확인
-- ✅ 네비게이션 메뉴 확인
-- ✅ 페이지 간 이동
+### E2E 전체 플로우
+- ✅ **STEP 1**: 로그인 페이지 접속 및 로그인
+- ✅ **STEP 2**: Test Cases 페이지로 이동
+- ✅ **STEP 3**: "Add case" 버튼 클릭
+- ✅ **STEP 4**: 테스트케이스 정보 입력 (Title, Precondition, Steps, Expected Result)
+- ✅ **STEP 5**: Save 버튼 클릭 및 저장 확인
 
 ## ⚙️ 설정
 
@@ -94,3 +66,14 @@ npx playwright show-report
 - HTML 리포트: `playwright-report/index.html`
 - 스크린샷/비디오: `test-results/`
 
+## 📹 영상 확인
+
+테스트 실행 중 영상이 자동으로 녹화됩니다:
+
+```
+test-results/
+  └── [테스트명]-[브라우저]/
+      └── video.webm
+```
+
+영상은 VLC Player 또는 Chrome 브라우저로 재생할 수 있습니다.

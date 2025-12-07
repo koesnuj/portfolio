@@ -5,17 +5,20 @@
 ### 🎯 테스트 시나리오
 
 1. **로그인**
-   - 이메일: `test1@tms.com`
-   - 비밀번호: `test123!`
+   - 로그인 페이지 접속
+   - 이메일/비밀번호 입력
+   - 로그인 버튼 클릭
    
-2. **테스트케이스 페이지 이동**
+2. **Test Cases 페이지 이동**
+   - 좌측 네비게이션에서 "Test Cases" 클릭
 
 3. **새 테스트케이스 생성**
-   - 제목 입력
-   - 설명 입력
-   - 우선순위 선택
+   - "Add case" 버튼 클릭
+   - Title, Precondition, Steps, Expected Result 입력
    
 4. **저장 및 확인**
+   - "Save" 버튼 클릭
+   - 성공 메시지 확인
 
 ---
 
@@ -216,5 +219,5 @@ npx playwright test --grep @video
 ---
 
 **테스트 대상**: https://tms-v2-phi.vercel.app/  
-**계정**: test1@tms.com / test123!
+**계정 설정**: `config/test-config.js`에서 관리
 

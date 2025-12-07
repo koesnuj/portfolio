@@ -6,16 +6,9 @@
 playwright/
 ├── tests/
 │   └── tms/                         # TMS_v2 테스트
-│       ├── auth/                    # 인증 테스트
-│       ├── testcase/                # 테스트케이스 관리 테스트
-│       ├── plan/                    # 테스트 플랜 관리 테스트
-│       ├── dashboard/               # 대시보드 테스트
 │       ├── e2e/                     # E2E 전체 플로우 테스트
+│       │   └── full-flow.spec.js   # 로그인부터 테스트케이스 생성까지
 │       └── README.md
-├── utils/
-│   ├── auth-helper.js               # TMS 로그인/로그아웃 헬퍼
-│   ├── report-helper.js             # 리포트 관리 모듈
-│   └── signup-helper.js             # 회원가입 헬퍼
 ├── config/
 │   └── test-config.js              # TMS 테스트 설정 (URL, 계정 정보)
 ├── test-results/                    # 테스트 결과 (스크린샷, 비디오)
@@ -43,11 +36,17 @@ npm test
 ## 🎯 테스트 실행
 
 ```bash
-# 테스트 실행
+# E2E 테스트 실행
 npm test
 
 # UI 모드로 실행
 npx playwright test --ui
+
+# 헤드 모드로 실행 (브라우저 보면서)
+npx playwright test tests/tms/e2e/full-flow.spec.js --headed
+
+# 디버그 모드
+npx playwright test tests/tms/e2e/full-flow.spec.js --debug
 
 # 리포트 보기
 npx playwright show-report
@@ -61,55 +60,71 @@ npx playwright show-report
 
 ## 📊 리포트
 
-### **테스트 결과**
-- `playwright-report/` - 최신 HTML 리포트
+### **포트폴리오 샘플 리포트**
+- 📁 **[docs/reports/index.html](./docs/reports/index.html)** - 샘플 HTML 리포트 (포트폴리오용)
+- 📸 **[docs/screenshots/](./docs/screenshots/)** - 주요 테스트 결과 스크린샷
+- 📖 **[docs/README.md](./docs/README.md)** - 리포트 사용 가이드
+
+### **테스트 실행 결과**
+- `playwright-report/` - 최신 HTML 리포트 (테스트 실행 후 생성)
 - `test-results/` - 테스트 결과, 스크린샷, 비디오
 
-## 🎯 테스트 종류
+**리포트 확인:**
+```bash
+npx playwright show-report
+```
 
-### **인증 (auth)**
-- **로그인**: 정상 로그인, 로그아웃, 실패 케이스
-- **회원가입**: 신규 사용자 등록 (필요시)
+## 🎯 E2E 테스트 시나리오
 
-### **테스트케이스 관리 (testcase)**
-- **CRUD**: 생성, 조회, 수정, 삭제
-- **폴더 관리**: 폴더 구조 확인 및 관리
-- **목록 조회**: 테스트케이스 목록 표시
+### **전체 플로우: 로그인 → 테스트케이스 생성**
 
-### **테스트 플랜 (plan)**
-- **플랜 생성**: 새 테스트 플랜 생성
-- **플랜 관리**: 플랜 목록 조회 및 관리
-- **플랜 실행**: 테스트 실행 및 결과 기록
+1. **로그인**
+   - 로그인 페이지 접속
+   - 이메일/비밀번호 입력
+   - 로그인 버튼 클릭
+   - 로그인 성공 확인
 
-### **대시보드 (dashboard)**
-- **통계 확인**: 테스트 진행률 및 통계 위젯
-- **네비게이션**: 메뉴 이동 및 페이지 전환
-- **전체 현황**: 프로젝트 전체 현황 확인
+2. **Test Cases 페이지 이동**
+   - 좌측 네비게이션에서 "Test Cases" 클릭
+   - 페이지 로드 확인
+
+3. **테스트케이스 생성**
+   - "Add case" 버튼 클릭
+   - 모달 팝업 열림
+
+4. **정보 입력**
+   - Title 입력
+   - Precondition 입력
+   - Steps 입력
+   - Expected Result 입력
+
+5. **저장**
+   - "Save" 버튼 클릭
+   - 성공 메시지 확인
 
 ## 🎯 테스트 태그 시스템
 
-- `@smoke` - 기본 동작 확인 (페이지 접속, 로그인 등)
-- `@critical` - 핵심 기능 테스트 (CRUD, 플랜 실행 등)
-- `@regression` - 회귀 테스트
+- `@e2e` - End-to-End 전체 플로우 테스트
+- `@video` - 영상 녹화 테스트
 
-## 🔧 공통 모듈 사용법
+```bash
+# 태그별 실행
+npx playwright test --grep @e2e
+npx playwright test --grep @video
+```
 
-### **새로운 테스트 파일 만들기**
+## 🔧 새로운 테스트 파일 만들기
+
 ```javascript
 const { test, expect } = require('@playwright/test');
-const { loginToTMS } = require('../../../utils/auth-helper');
 const config = require('../../../config/test-config');
 
 test.describe('새로운 기능 테스트', () => {
   
-  test.beforeEach(async ({ page }) => {
-    // 각 테스트 전에 자동 로그인
-    await loginToTMS(page);
-  });
-
-  test('기능 테스트 @smoke', async ({ page }) => {
-    // 로그인된 상태로 시작
-    await page.goto(config.urls.testcases());
+  test('기능 테스트 @e2e', async ({ page }) => {
+    // 로그인
+    await page.goto(config.urls.login());
+    await page.waitForLoadState('networkidle');
     
     // 테스트 코드 작성
     // ...
@@ -117,33 +132,22 @@ test.describe('새로운 기능 테스트', () => {
 });
 ```
 
-### **사용 가능한 함수들**
-```javascript
-const { 
-  loginToTMS,        // TMS 로그인
-  registerToTMS,     // 회원가입
-  logoutFromTMS      // 로그아웃
-} = require('../../../utils/auth-helper');
-```
-
 ## 📋 주요 기능
 
 ### ✅ 완료된 자동화
-- **로그인/로그아웃**: TMS_v2 자동 로그인 및 로그아웃
-- **인증 테스트**: 정상/비정상 로그인 시나리오
-- **테스트케이스 관리**: 목록 조회, 생성 버튼 확인, 폴더 구조
-- **테스트 플랜**: 플랜 목록 조회, 생성, 상세 페이지 접근
-- **대시보드**: 통계 위젯, 네비게이션, 페이지 전환
+- **E2E 전체 플로우**: 로그인부터 테스트케이스 생성까지 전체 시나리오
+- **자동 로그인**: 이메일/비밀번호 자동 입력 및 로그인
+- **테스트케이스 생성**: Add case → 정보 입력 → Save
 - **스크린샷/비디오**: 모든 테스트 자동 녹화
+- **상세 로그**: 각 단계별 진행 상황 콘솔 출력
 
 ## 🛠️ 개발 팁
 
-1. **새로운 테스트 만들 때**: `test.beforeEach`에서 `loginToTMS(page)` 사용
-2. **로그인 로직 변경 시**: `utils/auth-helper.js`만 수정
-3. **디버깅**: `--headed` 또는 `--debug` 옵션 사용
-4. **UI 모드**: `npx playwright test --ui`로 실시간 디버깅
-5. **특정 테스트만 실행**: `npx playwright test tests/tms/auth/login.spec.js`
-6. **태그별 실행**: `npx playwright test --grep @smoke`
+1. **디버깅**: `--headed` 또는 `--debug` 옵션 사용
+2. **UI 모드**: `npx playwright test --ui`로 실시간 디버깅
+3. **특정 테스트만 실행**: `npx playwright test tests/tms/e2e/full-flow.spec.js`
+4. **태그별 실행**: `npx playwright test --grep @e2e`
+5. **영상 확인**: `test-results/` 폴더에서 `video.webm` 파일 재생
 
 ## 📝 주의사항
 
@@ -164,6 +168,14 @@ testAccount: {
 ```
 
 ⚠️ **중요**: TMS_v2에 해당 계정이 등록되어 있어야 합니다!
+
+## 📹 영상 녹화
+
+모든 E2E 테스트는 자동으로 영상이 녹화됩니다:
+
+- 저장 위치: `test-results/[테스트명]-[브라우저]/video.webm`
+- 재생 방법: VLC Player, Chrome 브라우저 등
+- 설정 변경: `playwright.config.js`의 `video` 옵션 수정
 
 ---
 

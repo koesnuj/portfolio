@@ -34,11 +34,38 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini, Cursor �
 
 ---
 
-## 📁 Projects
+## 📁 TMS Projects
 
 ### 🔹 [TMS_v2 – Test Management System](./projects/TMS_v2/README.md)
 ### 🔹 [TMS Retrospect](https://github.com/koesnuj/portfolio/blob/main/projects/TMS_v2/retrospect.md)
 ### 🔹 [사용한 주요 프롬프트](https://github.com/koesnuj/portfolio/blob/main/projects/TMS_v2/prompt.md)
+
+---
+
+## 🧪 Test Automation
+
+### 🔹 [TMS_v2 E2E Test Automation - Playwright](./projects/playwright/README.md)
+
+**E2E 테스트 자동화 프로젝트**
+- **기술 스택**: Playwright, JavaScript
+- **테스트 대상**: [TMS_v2](https://tms-v2-phi.vercel.app/)
+- **주요 기능**:
+  - 로그인부터 테스트케이스 생성까지 전체 플로우 자동화
+  - 영상 녹화 및 스크린샷 자동 캡처
+  - 상세한 테스트 리포트 생성 (HTML, JSON, JUnit)
+
+**테스트 시나리오**
+1. 로그인 페이지 접속 및 자동 로그인
+2. Test Cases 페이지 이동
+3. "Add case" 버튼 클릭 및 모달 팝업
+4. 테스트케이스 정보 입력 (Title, Precondition, Steps, Expected Result)
+5. 저장 및 성공 확인
+
+📊 **[테스트 리포트](./projects/playwright/docs/reports/index.html)** | 📸 **[테스트 결과](./projects/playwright/docs/)** | 📋 **[Quick Start](./projects/playwright/QUICK_START.md)**
+
+**테스트 결과 샘플**
+
+![E2E Test Result](./projects/playwright/docs/screenshots/e2e-test-result.png)
 
 
 ---

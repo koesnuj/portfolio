@@ -1,5 +1,4 @@
 const { test, expect } = require('@playwright/test');
-const { loginToTMS } = require('../../../utils/auth-helper');
 const config = require('../../../config/test-config');
 
 test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', () => {

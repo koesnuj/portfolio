@@ -1,8 +1,20 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
-const { generateReportFolderName, backupReport } = require('./utils/report-helper');
 const path = require('path');
 const fs = require('fs');
+
+// 현재 날짜/시간 기반 폴더명 생성
+function generateReportFolderName() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+}
 
 // 환경 변수로 리포트 폴더명 관리
 if (!process.env.REPORT_FOLDER_NAME) {
@@ -14,11 +26,6 @@ const testResultsFolder = path.join(process.cwd(), 'test-results', process.env.R
 
 // 폴더가 없으면 생성 (UI 모드가 아닐 때만)
 if (!process.env.PLAYWRIGHT_UI_MODE) {
-  // 기존 리포트가 있으면 백업
-  if (fs.existsSync(reportFolder)) {
-    backupReport(reportFolder);
-  }
-  
   if (!fs.existsSync(reportFolder)) {
     fs.mkdirSync(reportFolder, { recursive: true });
     console.log(`📁 리포트 폴더 생성: ${reportFolder}`);

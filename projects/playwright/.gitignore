@@ -8,6 +8,9 @@ playwright-report-backups/
 test-results/
 screenshots/
 
+# Keep portfolio docs (sample reports and screenshots)
+!docs/
+
 # Logs
 *.log
 scheduler.log
