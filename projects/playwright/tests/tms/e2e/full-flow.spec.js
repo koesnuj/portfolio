@@ -66,8 +66,8 @@ test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', ()
     // ============================================
     console.log('\n📍 STEP 2: Test Cases 페이지로 이동');
     
-    const currentUrl = page.url();
-    if (!currentUrl.includes('testcases') && !currentUrl.includes('test-cases')) {
+    let currentUrlStep2 = page.url();
+    if (!currentUrlStep2.includes('testcases') && !currentUrlStep2.includes('test-cases')) {
       console.log('✓ 좌측 트리에서 Test Cases 찾는 중...');
       
       // 좌측 트리에서 Test Cases 찾기
