@@ -61,11 +61,11 @@ QA의 핵심 역량을 기반으로 **AI 개발 도구(Claude, Gemini, Cursor �
 4. 테스트케이스 정보 입력 (Title, Precondition, Steps, Expected Result)
 5. 저장 및 성공 확인
 
-📊 **[테스트 리포트](./projects/playwright/docs/reports/index.html)** | 📸 **[테스트 결과](./projects/playwright/docs/)** | 📋 **[Quick Start](./projects/playwright/QUICK_START.md)**
+### E2E Test Automation Demo
 
-**테스트 결과 샘플**
 
-![E2E Test Result](./projects/playwright/docs/screenshots/e2e-test-result.png)
+
+https://github.com/user-attachments/assets/playwright-e2e-test-demo.webm
 
 
 ---
