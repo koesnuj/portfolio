@@ -1,4 +1,4 @@
-# 👋 Welcome to My QA Portfolio
+# :information_source: Portfolio
 
 안녕하세요. 저는 **QA 기반의 사고력과 생성형 AI 활용 능력**을 바탕으로  
 서비스의 품질을 높이는 데 집중하는 **QA 임준석**입니다.
