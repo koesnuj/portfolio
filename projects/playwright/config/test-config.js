@@ -1,8 +1,8 @@
 module.exports = {
   // TMS_v2 테스트 계정
   testAccount: {
-    email: 'test@test.com',
-    password: 'test1234',
+    email: 'test1@tms.com',
+    password: 'test123!',
     username: 'Test User'
   },
   

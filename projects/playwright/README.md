@@ -10,6 +10,7 @@ playwright/
 │       ├── testcase/                # 테스트케이스 관리 테스트
 │       ├── plan/                    # 테스트 플랜 관리 테스트
 │       ├── dashboard/               # 대시보드 테스트
+│       ├── e2e/                     # E2E 전체 플로우 테스트
 │       └── README.md
 ├── utils/
 │   ├── auth-helper.js               # TMS 로그인/로그아웃 헬퍼
@@ -17,14 +18,12 @@ playwright/
 │   └── signup-helper.js             # 회원가입 헬퍼
 ├── config/
 │   └── test-config.js              # TMS 테스트 설정 (URL, 계정 정보)
-├── scripts/
-│   ├── report.js                    # 리포트 관리
-│   ├── run-all-tests.js            # 전체 테스트 실행
-│   ├── run-test.js                 # 개별 테스트 실행
-│   └── run-platform-test.js        # 플랫폼별 테스트 실행
 ├── test-results/                    # 테스트 결과 (스크린샷, 비디오)
-├── package.json                     # 프로젝트 설정
+├── playwright-report/               # HTML 테스트 리포트
+├── package.json                     # 프로젝트 설정 및 npm scripts
 ├── playwright.config.js            # Playwright 설정
+├── E2E_TEST_GUIDE.md               # E2E 테스트 가이드
+├── QUICK_START.md                  # 빠른 시작 가이드
 └── README.md                        # 프로젝트 문서
 ```
 
