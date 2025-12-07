@@ -1,6 +1,6 @@
 # AI와의 첫 협업 — Cursor로 만든 테스트 관리 시스템, TMS_v2
 
-> 코딩 경험 없는 QA가 1주일간 Cursor와 함께 TestRail 대체 시스템을 만든 이야기
+> 코딩 경험 없는 QA가 3주일간 Cursor와 함께 TestRail 대체 시스템을 만든 이야기
 
 ---
 
