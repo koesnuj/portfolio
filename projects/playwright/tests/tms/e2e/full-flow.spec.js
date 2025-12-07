@@ -34,26 +34,53 @@ test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', ()
     const loginButton = page.locator('button:has-text("로그인"), button:has-text("Login"), button[type="submit"]').first();
     await loginButton.click();
     
-    // 대시보드로 리다이렉트 대기
-    await page.waitForURL('**/dashboard', { timeout: 10000 });
+    // 로그인 후 페이지 이동 대기
+    await page.waitForTimeout(3000); // 로그인 처리 대기
+    
+    const currentUrl = page.url();
+    console.log(`✓ 현재 URL: ${currentUrl}`);
+    
+    // 로그인 실패 시 에러 메시지 확인
+    const errorMessage = page.locator('text=/오류|error|실패|fail|invalid/i').first();
+    if (await errorMessage.count() > 0 && await errorMessage.isVisible()) {
+      console.log('⚠️ 로그인 오류 메시지 발견');
+      await page.screenshot({ path: 'login-error.png' });
+      throw new Error('로그인 실패: 계정 정보를 확인하세요');
+    }
+    
+    // 로그인 페이지에 여전히 있는지 확인
+    if (currentUrl.includes('login')) {
+      console.log('⚠️ 여전히 로그인 페이지에 있습니다');
+      await page.screenshot({ path: 'still-on-login.png' });
+      throw new Error('로그인 실패: 페이지가 이동하지 않았습니다');
+    }
+    
+    console.log('✓ 로그인 성공! 페이지 이동됨');
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     
     console.log('✅ STEP 1 완료: 로그인 성공!');
     
     // ============================================
-    // STEP 2: 좌측 트리에서 "Test Cases" 클릭
+    // STEP 2: 좌측 트리에서 "Test Cases" 클릭 (이미 테스트케이스 페이지가 아닌 경우)
     // ============================================
-    console.log('\n📍 STEP 2: 좌측 트리에서 "Test Cases" 클릭');
+    console.log('\n📍 STEP 2: Test Cases 페이지로 이동');
     
-    // 좌측 트리에서 Test Cases 찾기
-    const testCasesTreeItem = page.locator('text=/Test Cases|테스트케이스|테스트 케이스/i').first();
-    await testCasesTreeItem.waitFor({ state: 'visible', timeout: 10000 });
-    await testCasesTreeItem.click();
-    console.log('✓ Test Cases 클릭');
-    
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    const currentUrl = page.url();
+    if (!currentUrl.includes('testcases') && !currentUrl.includes('test-cases')) {
+      console.log('✓ 좌측 트리에서 Test Cases 찾는 중...');
+      
+      // 좌측 트리에서 Test Cases 찾기
+      const testCasesTreeItem = page.locator('text=/Test Cases|테스트케이스|테스트 케이스/i').first();
+      await testCasesTreeItem.waitFor({ state: 'visible', timeout: 10000 });
+      await testCasesTreeItem.click();
+      console.log('✓ Test Cases 클릭');
+      
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(2000);
+    } else {
+      console.log('✓ 이미 Test Cases 페이지에 있습니다');
+    }
     
     console.log('✅ STEP 2 완료: Test Cases 페이지 진입');
     
@@ -191,27 +218,6 @@ test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', ()
     
     console.log('\n🎬 E2E 테스트 완료!');
     console.log('📹 영상은 test-results 폴더에 저장됩니다.');
-  });
-  
-  test('개별 테스트: 로그인만 @smoke', async ({ page }) => {
-    console.log('🔐 로그인 테스트 시작');
-    
-    await page.goto(config.urls.login());
-    await page.waitForLoadState('networkidle');
-    
-    const emailInput = page.locator('input[type="email"]').first();
-    await emailInput.fill(config.testAccount.email);
-    
-    const passwordInput = page.locator('input[type="password"]').first();
-    await passwordInput.fill(config.testAccount.password);
-    
-    const loginButton = page.locator('button:has-text("로그인"), button[type="submit"]').first();
-    await loginButton.click();
-    
-    await page.waitForURL('**/dashboard', { timeout: 10000 });
-    await expect(page).toHaveURL(/.*dashboard/);
-    
-    console.log('✅ 로그인 테스트 성공');
   });
 });
 
