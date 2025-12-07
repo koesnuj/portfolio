@@ -4,7 +4,7 @@ const config = require('../../../config/test-config');
 
 test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', () => {
   
-  test('전체 플로우: 로그인 → 테스트케이스 생성 @e2e @video', async ({ page }) => {
+  test('전체 플로우: 로그인 → Test Cases → Add case → 정보입력 → Save @e2e @video', async ({ page }) => {
     test.setTimeout(120000); // 2분 타임아웃
     
     console.log('🎬 E2E 테스트 시작: 로그인부터 테스트케이스 생성까지');
@@ -13,7 +13,7 @@ test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', ()
     // ============================================
     // STEP 1: 로그인
     // ============================================
-    console.log('\n📍 STEP 1: 로그인 페이지 접속');
+    console.log('\n📍 STEP 1: 로그인');
     await page.goto(config.urls.login());
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
@@ -42,124 +42,148 @@ test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', ()
     console.log('✅ STEP 1 완료: 로그인 성공!');
     
     // ============================================
-    // STEP 2: 테스트케이스 페이지로 이동
+    // STEP 2: 좌측 트리에서 "Test Cases" 클릭
     // ============================================
-    console.log('\n📍 STEP 2: 테스트케이스 페이지로 이동');
+    console.log('\n📍 STEP 2: 좌측 트리에서 "Test Cases" 클릭');
     
-    // 네비게이션 메뉴에서 테스트케이스 클릭
-    const testcaseLink = page.locator('a:has-text("테스트케이스"), a:has-text("Test Cases"), a[href*="testcases"]').first();
-    await testcaseLink.waitFor({ state: 'visible', timeout: 5000 });
-    await testcaseLink.click();
+    // 좌측 트리에서 Test Cases 찾기
+    const testCasesTreeItem = page.locator('text=/Test Cases|테스트케이스|테스트 케이스/i').first();
+    await testCasesTreeItem.waitFor({ state: 'visible', timeout: 10000 });
+    await testCasesTreeItem.click();
+    console.log('✓ Test Cases 클릭');
     
-    await page.waitForURL('**/testcases', { timeout: 5000 });
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     
-    console.log('✅ STEP 2 완료: 테스트케이스 페이지 진입');
+    console.log('✅ STEP 2 완료: Test Cases 페이지 진입');
     
     // ============================================
-    // STEP 3: 새 테스트케이스 생성 버튼 클릭
+    // STEP 3: 우측 상단 "Add case" 버튼 클릭
     // ============================================
-    console.log('\n📍 STEP 3: 새 테스트케이스 생성 버튼 클릭');
+    console.log('\n📍 STEP 3: 우측 상단 "Add case" 버튼 클릭');
     
-    // 테스트케이스 생성 버튼 찾기 (다양한 패턴 시도)
-    const createButtonSelectors = [
-      'button:has-text("생성")',
+    // Add case 버튼 찾기 (다양한 패턴)
+    const addCaseButtonSelectors = [
+      'button:has-text("Add case")',
+      'button:has-text("Add Case")',
+      'button:has-text("케이스 추가")',
       'button:has-text("추가")',
-      'button:has-text("New")',
-      'button:has-text("Create")',
-      'button:has-text("새로 만들기")',
-      'button:has-text("테스트케이스 생성")',
-      '[data-testid="create-testcase"]',
-      'button[class*="create"]',
+      '[data-testid="add-case"]',
       'button[class*="add"]'
     ];
     
-    let createButton = null;
-    for (const selector of createButtonSelectors) {
+    let addCaseButton = null;
+    for (const selector of addCaseButtonSelectors) {
       const button = page.locator(selector).first();
-      if (await button.count() > 0 && await button.isVisible().catch(() => false)) {
-        createButton = button;
-        console.log(`✓ 생성 버튼 찾음: ${selector}`);
-        break;
+      if (await button.count() > 0) {
+        try {
+          if (await button.isVisible()) {
+            addCaseButton = button;
+            console.log(`✓ Add case 버튼 찾음: ${selector}`);
+            break;
+          }
+        } catch (e) {
+          continue;
+        }
       }
     }
     
-    if (createButton) {
-      await createButton.click();
-      await page.waitForTimeout(1500);
-      console.log('✅ STEP 3 완료: 생성 버튼 클릭');
-      
-      // ============================================
-      // STEP 4: 테스트케이스 정보 입력
-      // ============================================
-      console.log('\n📍 STEP 4: 테스트케이스 정보 입력');
-      
-      // 제목 입력 필드 찾기
-      const titleInput = page.locator('input[name="title"], input[placeholder*="제목"], input[placeholder*="Title"], input[placeholder*="이름"]').first();
-      if (await titleInput.count() > 0) {
-        const testTitle = `자동 테스트 케이스 ${Date.now()}`;
-        await titleInput.fill(testTitle);
-        console.log(`📝 제목 입력: ${testTitle}`);
-        await page.waitForTimeout(500);
-      }
-      
-      // 설명 입력 필드 찾기
-      const descriptionInput = page.locator('textarea[name="description"], textarea[placeholder*="설명"], textarea[placeholder*="Description"], [contenteditable="true"]').first();
-      if (await descriptionInput.count() > 0) {
-        await descriptionInput.fill('Playwright를 통한 자동화 테스트로 생성된 테스트케이스입니다.');
-        console.log('📝 설명 입력 완료');
-        await page.waitForTimeout(500);
-      }
-      
-      // 우선순위 선택 (있다면)
-      const prioritySelect = page.locator('select[name="priority"], [name="priority"]').first();
-      if (await prioritySelect.count() > 0) {
-        await prioritySelect.selectOption('HIGH');
-        console.log('🎯 우선순위: HIGH 선택');
-        await page.waitForTimeout(300);
-      }
-      
-      // ============================================
-      // STEP 5: 저장 버튼 클릭
-      // ============================================
-      console.log('\n📍 STEP 5: 저장 버튼 클릭');
-      
-      const saveButtonSelectors = [
-        'button:has-text("저장")',
-        'button:has-text("Save")',
-        'button:has-text("생성")',
-        'button:has-text("Create")',
-        'button[type="submit"]'
-      ];
-      
-      let saveButton = null;
-      for (const selector of saveButtonSelectors) {
-        const button = page.locator(selector).first();
-        if (await button.count() > 0 && await button.isVisible().catch(() => false)) {
-          saveButton = button;
-          console.log(`✓ 저장 버튼 찾음: ${selector}`);
-          break;
+    if (!addCaseButton) {
+      console.log('⚠️ Add case 버튼을 찾을 수 없습니다. 모든 버튼 확인 중...');
+      await page.screenshot({ path: 'debug-before-add-case.png' });
+    }
+    
+    await addCaseButton.click();
+    console.log('✓ Add case 버튼 클릭');
+    await page.waitForTimeout(1500);
+    
+    console.log('✅ STEP 3 완료: 모달 팝업 열림');
+    
+    // ============================================
+    // STEP 4: 모달에서 정보 입력
+    // ============================================
+    console.log('\n📍 STEP 4: 테스트케이스 정보 입력');
+    
+    // Title 입력
+    console.log('📝 Title 입력 중...');
+    const titleInput = page.locator('input[name="title"], input[placeholder*="title" i], input[placeholder*="제목"]').first();
+    await titleInput.waitFor({ state: 'visible', timeout: 5000 });
+    await titleInput.fill('playwright 테스트');
+    console.log('✓ Title: "playwright 테스트"');
+    await page.waitForTimeout(500);
+    
+    // Precondition 입력
+    console.log('📝 Precondition 입력 중...');
+    const preconditionInput = page.locator('textarea[name="precondition"], textarea[placeholder*="precondition" i], [name="precondition"]').first();
+    if (await preconditionInput.count() > 0) {
+      await preconditionInput.fill('playwright 테스트');
+      console.log('✓ Precondition: "playwright 테스트"');
+      await page.waitForTimeout(500);
+    }
+    
+    // Steps 입력
+    console.log('📝 Steps 입력 중...');
+    const stepsInput = page.locator('textarea[name="steps"], textarea[placeholder*="steps" i], [name="steps"]').first();
+    if (await stepsInput.count() > 0) {
+      await stepsInput.fill('playwright 테스트');
+      console.log('✓ Steps: "playwright 테스트"');
+      await page.waitForTimeout(500);
+    }
+    
+    // Expected Result 입력
+    console.log('📝 Expected Result 입력 중...');
+    const expectedResultInput = page.locator('textarea[name="expectedResult"], textarea[name="expected"], textarea[placeholder*="expected" i], [name="expectedResult"]').first();
+    if (await expectedResultInput.count() > 0) {
+      await expectedResultInput.fill('playwright 테스트');
+      console.log('✓ Expected Result: "playwright 테스트"');
+      await page.waitForTimeout(500);
+    }
+    
+    console.log('✅ STEP 4 완료: 모든 필드 입력 완료');
+    
+    // ============================================
+    // STEP 5: Save 버튼 클릭
+    // ============================================
+    console.log('\n📍 STEP 5: Save 버튼 클릭');
+    
+    const saveButtonSelectors = [
+      'button:has-text("Save")',
+      'button:has-text("저장")',
+      'button:has-text("확인")',
+      'button[type="submit"]'
+    ];
+    
+    let saveButton = null;
+    for (const selector of saveButtonSelectors) {
+      const button = page.locator(selector).first();
+      if (await button.count() > 0) {
+        try {
+          if (await button.isVisible()) {
+            saveButton = button;
+            console.log(`✓ Save 버튼 찾음: ${selector}`);
+            break;
+          }
+        } catch (e) {
+          continue;
         }
       }
+    }
+    
+    if (saveButton) {
+      await saveButton.click();
+      console.log('✓ Save 버튼 클릭');
+      await page.waitForTimeout(2000);
       
-      if (saveButton) {
-        await saveButton.click();
-        await page.waitForTimeout(2000);
-        console.log('✅ STEP 5 완료: 저장 버튼 클릭');
-        
-        // 성공 메시지 확인 (옵션)
-        const successMessage = page.locator('text=/성공|success|완료|created/i').first();
-        if (await successMessage.count() > 0) {
-          console.log('🎉 성공 메시지 확인됨');
-        }
-      } else {
-        console.log('⚠️ 저장 버튼을 찾을 수 없습니다. 화면 확인이 필요합니다.');
+      console.log('✅ STEP 5 완료: 저장 완료');
+      
+      // 성공 메시지 확인
+      const successMessage = page.locator('text=/성공|success|완료|created|saved/i').first();
+      if (await successMessage.count() > 0) {
+        console.log('🎉 성공 메시지 확인됨');
       }
-      
     } else {
-      console.log('⚠️ 테스트케이스 생성 버튼을 찾을 수 없습니다.');
-      console.log('💡 현재 화면에서 수동으로 확인이 필요합니다.');
+      console.log('⚠️ Save 버튼을 찾을 수 없습니다.');
+      await page.screenshot({ path: 'debug-no-save-button.png' });
     }
     
     // 최종 대기 (화면 확인용)
