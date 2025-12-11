@@ -7,7 +7,7 @@ playwright/
 ├── tests/
 │   └── tms/                         # TMS_v2 테스트
 │       ├── e2e/                     # E2E 전체 플로우 테스트
-│       │   ├── full-flow.spec.js   # 로그인부터 테스트케이스 생성까지
+│       │   ├── create-case-flow.spec.js   # 로그인부터 테스트케이스 생성까지
 │       │   └── create-plan-flow.spec.js  # 로그인부터 플랜 생성까지
 │       └── README.md
 ├── config/
@@ -44,11 +44,11 @@ npm test
 npx playwright test --ui
 
 # 헤드 모드로 실행 (브라우저 보면서)
-npx playwright test tests/tms/e2e/full-flow.spec.js --headed
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --headed
 npx playwright test tests/tms/e2e/create-plan-flow.spec.js --headed
 
 # 디버그 모드
-npx playwright test tests/tms/e2e/full-flow.spec.js --debug
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --debug
 npx playwright test tests/tms/e2e/create-plan-flow.spec.js --debug
 
 # 리포트 보기
@@ -184,7 +184,7 @@ test.describe('새로운 기능 테스트', () => {
 1. **디버깅**: `--headed` 또는 `--debug` 옵션 사용
 2. **UI 모드**: `npx playwright test --ui`로 실시간 디버깅
 3. **특정 테스트만 실행**: 
-   - `npx playwright test tests/tms/e2e/full-flow.spec.js`
+   - `npx playwright test tests/tms/e2e/create-case-flow.spec.js`
    - `npx playwright test tests/tms/e2e/create-plan-flow.spec.js`
 4. **태그별 실행**: `npx playwright test --grep @e2e`
 5. **영상 확인**: `test-results/` 폴더에서 `video.webm` 파일 재생

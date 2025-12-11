@@ -5,7 +5,7 @@
 ```
 tests/tms/
 └── e2e/                    # E2E 전체 플로우 테스트
-    └── full-flow.spec.js   # 로그인부터 테스트케이스 생성까지 전체 플로우
+    └── create-case-flow.spec.js   # 로그인부터 테스트케이스 생성까지 전체 플로우
 ```
 
 ## 🎯 테스트 태그
@@ -17,13 +17,13 @@ tests/tms/
 
 ```bash
 # E2E 전체 플로우 테스트 실행
-npx playwright test tests/tms/e2e/full-flow.spec.js
+npx playwright test tests/tms/e2e/create-case-flow.spec.js
 
 # 헤드 모드로 실행 (브라우저 보면서)
-npx playwright test tests/tms/e2e/full-flow.spec.js --headed
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --headed
 
 # 디버그 모드
-npx playwright test tests/tms/e2e/full-flow.spec.js --debug
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --debug
 
 # UI 모드로 실행 (추천)
 npx playwright test --ui

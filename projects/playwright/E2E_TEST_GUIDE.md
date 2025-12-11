@@ -28,16 +28,16 @@
 
 ```bash
 # 전체 E2E 테스트
-npx playwright test tests/tms/e2e/full-flow.spec.js
+npx playwright test tests/tms/e2e/create-case-flow.spec.js
 
 # 헤드 모드로 실행 (브라우저 보면서)
-npx playwright test tests/tms/e2e/full-flow.spec.js --headed
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --headed
 
 # 특정 테스트만 실행
-npx playwright test tests/tms/e2e/full-flow.spec.js -g "전체 플로우"
+npx playwright test tests/tms/e2e/create-case-flow.spec.js -g "전체 플로우"
 
 # 디버그 모드
-npx playwright test tests/tms/e2e/full-flow.spec.js --debug
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --debug
 ```
 
 ### 2. UI 모드로 실행 (추천)
@@ -47,7 +47,7 @@ npx playwright test --ui
 ```
 
 UI 모드에서:
-1. `tests/tms/e2e/full-flow.spec.js` 선택
+1. `tests/tms/e2e/create-case-flow.spec.js` 선택
 2. "전체 플로우" 테스트 클릭
 3. 실시간으로 테스트 진행 확인
 
@@ -190,7 +190,7 @@ npx playwright show-report
 ### 빠른 로그인 테스트만
 
 ```bash
-npx playwright test tests/tms/e2e/full-flow.spec.js -g "로그인만"
+npx playwright test tests/tms/e2e/create-case-flow.spec.js -g "로그인만"
 ```
 
 ### 모든 E2E 테스트

@@ -46,12 +46,12 @@ npx playwright test --ui
 
 ### 헤드 모드로 실행 (브라우저 보면서)
 ```bash
-npx playwright test tests/tms/e2e/full-flow.spec.js --headed
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --headed
 ```
 
 ### 디버그 모드
 ```bash
-npx playwright test tests/tms/e2e/full-flow.spec.js --debug
+npx playwright test tests/tms/e2e/create-case-flow.spec.js --debug
 ```
 
 단계별로 실행하며 디버깅할 수 있습니다.
@@ -126,13 +126,13 @@ Chrome 브라우저나 VLC Player로 영상을 재생할 수 있습니다.
 
 ### 셀렉터 오류
 - TMS_v2 사이트 구조가 변경되었을 수 있습니다
-- `tests/tms/e2e/full-flow.spec.js`의 셀렉터 업데이트 필요
+- `tests/tms/e2e/create-case-flow.spec.js`의 셀렉터 업데이트 필요
 - UI 모드로 실행하여 요소 선택자 확인
 
 ### 타임아웃 오류
 - 네트워크가 느린 경우 발생 가능
 - `playwright.config.js`에서 timeout 설정 증가
-- 또는 `full-flow.spec.js`의 `test.setTimeout()` 값 증가
+- 또는 `create-case-flow.spec.js`의 `test.setTimeout()` 값 증가
 
 ### 영상이 저장되지 않음
 - `playwright.config.js`의 `video: 'on'` 설정 확인
