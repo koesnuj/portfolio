@@ -39,16 +39,20 @@ test.describe('TMS_v2 E2E - 로그인부터 테스트케이스 생성까지', ()
     const currentUrl = page.url();
     console.log(`✓ 현재 URL: ${currentUrl}`);
     
-    // 로그인 실패 시 에러 메시지 확인
-    const errorMessage = page.locator('text=/오류|error|실패|fail|invalid/i').first();
-    if (await errorMessage.count() > 0 && await errorMessage.isVisible()) {
-      console.log('⚠️ 로그인 오류 메시지 발견');
-      await page.screenshot({ path: 'login-error.png' });
-      throw new Error('로그인 실패: 계정 정보를 확인하세요');
-    }
-    
     // 로그인 페이지에 여전히 있는지 확인
     if (currentUrl.includes('login')) {
+      // 로그인 페이지에 있을 때만 로그인 폼 영역에서 에러 메시지 확인
+      // 페이지 어딘가의 "실패/오류" 텍스트는 무시하고, 로그인 폼 내부의 에러만 체크
+      const loginFormContainer = page.locator('form, [class*="bg-white"][class*="rounded-lg"]').first();
+      if (await loginFormContainer.count() > 0) {
+        const errorMessage = loginFormContainer.locator('[class*="bg-rose"], [class*="text-rose"], text=/오류|error|실패|fail|invalid|로그인에 실패/i').first();
+        if (await errorMessage.count() > 0 && await errorMessage.isVisible()) {
+          console.log('⚠️ 로그인 폼에서 오류 메시지 발견');
+          await page.screenshot({ path: 'login-error.png' });
+          throw new Error('로그인 실패: 계정 정보를 확인하세요');
+        }
+      }
+      
       console.log('⚠️ 여전히 로그인 페이지에 있습니다');
       await page.screenshot({ path: 'still-on-login.png' });
       throw new Error('로그인 실패: 페이지가 이동하지 않았습니다');

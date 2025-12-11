@@ -63,8 +63,8 @@ module.exports = {
       status: 'ACTIVE'
     },
     plan: {
-      name: 'Test Plan',
-      description: 'Automated test plan'
+      name: 'test',
+      description: 'description'
     }
   },
 };
